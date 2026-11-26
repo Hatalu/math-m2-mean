@@ -64,6 +64,31 @@ h1, h2, h3, .btn, .badge { font-family: 'Mitr', sans-serif; }
   font-size: 1rem; padding: .5em 1em; background: var(--purple);
 }
 
+/* Lesson pages: one screen, no scrolling; sizes come from the viewport height */
+html:has(body.screen) { overflow: hidden; }
+body.screen { height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+.screen .bunting { flex: none; }
+.screen .wrap { position: relative; flex: 1; min-height: 0; width: 100%; max-width: 1300px; margin: 0 auto;
+  padding: 1.5vh 24px 3vh; display: flex; flex-direction: column; }
+.screen h1 { flex: none; text-align: center; font-size: clamp(1.3rem, 5vh, 2.8rem); margin: 0 0 2.5vh; }
+.screen h1 span { background: var(--yellow); padding: 0 .5em; display: inline-block; transform: rotate(-1.5deg); box-shadow: var(--shadow); }
+
+/* Big number cards (data set) */
+.nums { flex: none; display: flex; justify-content: center; gap: clamp(16px, 4vw, 60px); margin-bottom: 3.5vh; }
+.num { width: 15vh; height: 15vh; display: grid; place-items: center; font-family: 'Mitr'; font-weight: 600;
+  font-size: 9vh; color: #fff; background: var(--c); border-radius: 12px;
+  box-shadow: 0 6px 0 rgba(59, 42, 74, .25), 0 12px 20px rgba(59, 42, 74, .2);
+  text-shadow: 0 4px 0 rgba(0, 0, 0, .15); }
+.num:nth-child(odd) { transform: rotate(-3deg); }
+.num:nth-child(even) { transform: rotate(3deg); }
+
+/* Question strip */
+.q { background: var(--teal); color: #fff; padding: .35em .8em; font-family: 'Mitr'; font-size: 1.1em; }
+
+/* Paper sticker decorations */
+.deco { position: absolute; pointer-events: none; filter: drop-shadow(0 6px 6px rgba(0,0,0,.18)); }
+@media (max-width: 800px) { .deco.hide-sm { display: none; } }
+
 /* Paper confetti strip used as a decorative top border */
 .bunting {
   height: 34px;

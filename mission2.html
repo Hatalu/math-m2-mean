@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ภารกิจแบ่งปันให้เท่ากัน | ค่าเฉลี่ย ม.2</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .groups { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(12px, 2.5vw, 36px); }
+  .group { display: flex; flex-direction: column; align-items: center; gap: 2.5vh; padding: 2.5vh 10px;
+    background: #fff; border-top: 10px solid var(--c); }
+  .group:nth-child(odd) { transform: rotate(-.8deg); }
+  .group:nth-child(even) { transform: rotate(.8deg); }
+  .pile { display: grid; grid-template-columns: repeat(3, 10.5vh); gap: .8vh; justify-content: center; }
+  .pile img { width: 10.5vh; height: 10.5vh; filter: drop-shadow(0 3px 2px rgba(0,0,0,.25)); }
+  .ask { flex: none; align-self: center; margin-top: 3vh; font-size: clamp(1.1rem, 4vh, 2.2rem); transform: rotate(-1deg); box-shadow: var(--shadow); }
+</style>
+</head>
+<body class="screen">
+<a class="btn back" href="index.html">← หน้าหลัก</a>
+<div class="bunting"></div>
+
+<div class="wrap">
+  <img class="deco hide-sm" src="img/icons/star.png" alt="" style="width:80px; left:10px; top:6px; transform:rotate(-12deg)">
+  <img class="deco hide-sm" src="img/icons/pencil.png" alt="" style="width:90px; right:10px; top:4px; transform:rotate(8deg)">
+
+  <h1><span>ภารกิจแบ่งปันให้เท่ากัน</span></h1>
+
+  <section class="groups" id="groups"></section>
+
+  <div class="q ask">แบ่งให้เท่ากันได้คนละกี่เม็ด?</div>
+</div>
+
+<script>
+const GROUPS = [
+  { n: 9, img: 'btn-pink',   c: 'var(--pink)',   label: 'กระดุมโทนสีชมพู' },
+  { n: 5, img: 'btn-white',  c: '#b9b2c4',       label: 'กระดุมโทนสีขาว' },
+  { n: 7, img: 'btn-orange', c: 'var(--orange)', label: 'กระดุมโทนสีส้ม' },
+  { n: 3, img: 'btn-blue',   c: 'var(--blue)',   label: 'กระดุมโทนสีฟ้า' },
+];
+// each button gets its own tilt and a slightly different shade, like a real handful of buttons
+const look = i => `transform:rotate(${(i * 53) % 40 - 20}deg);filter:brightness(${0.9 + ((i * 7) % 5) * 0.04}) drop-shadow(0 3px 2px rgba(0,0,0,.25))`;
+document.getElementById('groups').innerHTML = GROUPS.map(g => `
+  <div class="group paper" style="--c:${g.c}">
+    <div class="num">${g.n}</div>
+    <div class="pile">${Array.from({ length: g.n }, (_, i) =>
+      `<img src="img/icons/${g.img}.png" alt="" style="${look(i + g.n)}">`).join('')}</div>
+  </div>`).join('');
+document.querySelectorAll('.group').forEach((el, k) => el.setAttribute('aria-label', `${GROUPS[k].label} ${GROUPS[k].n} เม็ด`));
+</script>
+</body>
+</html>
