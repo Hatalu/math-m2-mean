@@ -44,7 +44,9 @@
   }
   .card h3 { margin: 0; font-size: 1.45rem; }
   .card p { margin: .1em 0 0; opacity: .75; }
-  .card .ico { margin-left: auto; font-size: 2rem; }
+  .card .ico { margin-left: auto; width: 56px; height: 56px; object-fit: contain; filter: drop-shadow(0 3px 2px rgba(0,0,0,.2)); }
+  .deco { position: absolute; pointer-events: none; filter: drop-shadow(0 6px 6px rgba(0,0,0,.2)); }
+  .title { position: relative; }
   .card.soon { opacity: .6; cursor: default; }
 
   @media (max-width: 900px) {
@@ -56,6 +58,7 @@
 <body>
 <main class="hero">
   <div class="title">
+    <img class="deco" src="img/icons/star.png" alt="" style="width:70px; left:-20px; top:-60px; transform:rotate(-12deg)">
     <span class="tag">MATH ม.2</span><br>
     <h1>ค่าเฉลี่ยเลขคณิต</h1><br>
     <p>มาหาค่ากลางของข้อมูลกันเถอะ!</p>
@@ -65,27 +68,27 @@
     <a class="card paper" href="example1.html" style="--c: var(--pink)">
       <span class="badge">1</span>
       <div><h3>ตัวอย่าง</h3><p>ปาร์ตี้ปีใหม่ แบ่งขนมเท่าๆ กัน</p></div>
-      <span class="ico">🎉</span>
+      <img class="ico" src="img/icons/popper.png" alt="">
     </a>
     <div class="card paper soon" style="--c: var(--orange)">
       <span class="badge">2</span>
       <div><h3>กระดุม</h3><p>เร็วๆ นี้</p></div>
-      <span class="ico">🔘</span>
+      <img class="ico" src="img/icons/button.png" alt="">
     </div>
     <div class="card paper soon" style="--c: var(--teal)">
       <span class="badge">3</span>
       <div><h3>เร็วๆ นี้</h3><p>กำลังเตรียมเนื้อหา</p></div>
-      <span class="ico">✂️</span>
+      <img class="ico" src="img/icons/chart.png" alt="">
     </div>
     <div class="card paper soon" style="--c: var(--purple)">
       <span class="badge">4</span>
       <div><h3>เร็วๆ นี้</h3><p>กำลังเตรียมเนื้อหา</p></div>
-      <span class="ico">✂️</span>
+      <img class="ico" src="img/icons/calculator.png" alt="">
     </div>
     <div class="card paper soon" style="--c: var(--blue)">
       <span class="badge">5</span>
       <div><h3>เร็วๆ นี้</h3><p>กำลังเตรียมเนื้อหา</p></div>
-      <span class="ico">✂️</span>
+      <img class="ico" src="img/icons/pencil.png" alt="">
     </div>
   </nav>
 </main>
