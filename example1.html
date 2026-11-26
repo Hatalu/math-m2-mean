@@ -10,7 +10,7 @@
   h1 { text-align: center; font-size: clamp(1.8rem, 4vw, 2.8rem); margin: .2em 0 .8em; }
   h1 span { background: var(--yellow); padding: 0 .5em; display: inline-block; transform: rotate(-1.5deg); box-shadow: var(--shadow); }
 
-  .story { display: grid; grid-template-columns: 1.35fr 1fr; gap: 32px; align-items: center; }
+  .story { position: relative; display: grid; grid-template-columns: 1.35fr 1fr; gap: 32px; align-items: center; }
   .story img.scene { width: 100%; display: block; border: 12px solid #fff; box-shadow: var(--shadow); transform: rotate(-1deg); }
   .story .paper { position: relative; padding: 28px 30px; font-size: clamp(1.2rem, 2vw, 1.55rem); line-height: 1.8; transform: rotate(1deg); }
   .story b { color: var(--pink); font-family: 'Mitr'; }
@@ -35,10 +35,10 @@
   <h1><span>ตัวอย่าง: ปาร์ตี้ปีใหม่ แบ่งขนม</span></h1>
 
   <section class="story">
+    <img class="deco" src="img/icons/snack.png" alt="" style="width:64px; right:-14px; top:-40px; transform:rotate(14deg); z-index:2">
+    <img class="deco" src="img/icons/gift.png" alt="" style="width:72px; right:-10px; bottom:-44px; transform:rotate(-8deg); z-index:2">
     <img class="scene" src="img/party.jpg" alt="ภาพกระดาษตัดสีสดใส นักเรียนสี่คนนำถุงขนมมาวางรวมกันบนโต๊ะในงานปีใหม่ที่โรงเรียน">
     <div class="paper">
-      <img class="deco" src="img/icons/snack.png" alt="" style="width:64px; right:-18px; top:-34px; transform:rotate(14deg)">
-      <img class="deco" src="img/icons/gift.png" alt="" style="width:70px; left:-26px; bottom:-30px; transform:rotate(-10deg)">
       ปีใหม่เด็กนักเรียนเอาขนมมาแบ่งกินกันที่โรงเรียน<br>
       คนที่หนึ่งนำขนมมา <b>4 ถุง</b><br>
       คนที่สองนำขนมมา <b>6 ถุง</b><br>
