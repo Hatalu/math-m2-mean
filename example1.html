@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตัวอย่าง: ปาร์ตี้ปีใหม่แบ่งขนม | ค่าเฉลี่ย ม.2</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .wrap { max-width: 1150px; margin: 0 auto; padding: 70px 20px 60px; }
+  h1 { text-align: center; font-size: clamp(1.8rem, 4vw, 2.8rem); margin: .2em 0 .6em; }
+  h1 span { background: var(--yellow); padding: 0 .4em; display: inline-block; transform: rotate(-1.5deg); box-shadow: var(--shadow); }
+
+  .story { display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; align-items: center; }
+  .story img { width: 100%; display: block; border: 10px solid #fff; box-shadow: var(--shadow); transform: rotate(-1deg); }
+  .story .paper { padding: 22px 26px; font-size: 1.25rem; line-height: 1.7; transform: rotate(1deg); }
+  .story b { color: var(--pink); }
+  .q { margin-top: .6em; background: var(--teal); color: #fff; padding: .4em .8em; font-family: 'Mitr'; }
+
+  .board { margin-top: 40px; padding: 26px; background: #fff; }
+  .kids { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .kid { text-align: center; padding: 14px 10px; border-radius: 8px; background: color-mix(in srgb, var(--c) 18%, #fff); border: 3px dashed var(--c); }
+  .kid h3 { margin: 0 0 .2em; }
+  .face { font-size: 2.4rem; }
+  .count { font-family: 'Mitr'; font-size: 1.6rem; color: var(--c); }
+  .bags { min-height: 120px; display: flex; flex-wrap: wrap-reverse; justify-content: center; align-content: flex-start; gap: 6px; margin-top: 8px; }
+
+  /* paper snack bag: body + crimped top */
+  .bag {
+    width: 30px; height: 38px; position: relative; background: var(--bc);
+    border-radius: 4px 4px 8px 8px; box-shadow: 0 3px 0 rgba(0,0,0,.18);
+    animation: pop .35s ease both;
+  }
+  .bag::before { content: ''; position: absolute; left: -2px; right: -2px; top: -5px; height: 7px;
+    background: repeating-linear-gradient(90deg, var(--bc) 0 4px, transparent 4px 6px); filter: brightness(.85); }
+  .bag::after { content: ''; position: absolute; left: 8px; top: 12px; width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,.7); }
+  @keyframes pop { from { transform: scale(0) rotate(-20deg); } to { transform: scale(1); } }
+
+  .pile { display: none; margin: 22px auto 0; padding: 18px; max-width: 640px; text-align: center; border-radius: 10px; background: color-mix(in srgb, var(--yellow) 30%, #fff); border: 3px dashed var(--orange); }
+  .pile .bags { min-height: 0; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin: 26px 0 6px; }
+
+  .math { margin: 24px auto 0; max-width: 760px; padding: 20px 26px; font-size: 1.5rem; text-align: center; font-family: 'Mitr'; display: none; }
+  .math .line { margin: .3em 0; animation: pop .4s ease both; }
+  .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 .2em; }
+  .frac span:first-child { border-bottom: 3px solid var(--ink); padding: 0 .3em; }
+  .ans { display: inline-block; background: var(--pink); color: #fff; padding: .1em .6em; transform: rotate(-2deg); }
+  .rule { margin-top: .8em; font-size: 1.15rem; background: color-mix(in srgb, var(--teal) 15%, #fff); padding: .7em; border-radius: 8px; }
+
+  @media (max-width: 800px) {
+    .story { grid-template-columns: 1fr; }
+    .kids { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<a class="btn back" href="index.html">← หน้าหลัก</a>
+<div class="bunting"></div>
+
+<div class="wrap">
+  <h1><span>ตัวอย่าง: ปาร์ตี้ปีใหม่ แบ่งขนม 🎉</span></h1>
+
+  <section class="story">
+    <img src="img/party.jpg" alt="ภาพกระดาษตัดสีสดใส นักเรียนสี่คนนำถุงขนมมาวางรวมกันบนโต๊ะในงานปีใหม่ที่โรงเรียน">
+    <div class="paper">
+      วันปีใหม่ นักเรียน 4 คนนำขนมมาแบ่งกินกันที่โรงเรียน<br>
+      คนที่หนึ่งนำมา <b>4 ถุง</b> คนที่สองนำมา <b>6 ถุง</b><br>
+      คนที่สามนำมา <b>8 ถุง</b> คนที่สี่นำมา <b>10 ถุง</b><br>
+      นำมารวมกันแล้วแบ่งเท่าๆ กัน
+      <div class="q">จะได้ขนมเฉลี่ยคนละกี่ถุง?</div>
+    </div>
+  </section>
+
+  <section class="board paper">
+    <div class="kids" id="kids"></div>
+    <div class="pile" id="pile"><h3>กองขนมรวม: <span id="pileCount">0</span> ถุง</h3><div class="bags" id="pileBags"></div></div>
+
+    <div class="controls">
+      <button class="btn orange" id="btnSum">① รวมขนมทั้งหมด</button>
+      <button class="btn teal" id="btnShare" disabled>② แบ่งเท่าๆ กัน</button>
+      <button class="btn purple" id="btnReset">เริ่มใหม่</button>
+    </div>
+
+    <div class="math paper" id="math"></div>
+  </section>
+</div>
+
+<script>
+const KIDS = [
+  { name: 'คนที่ 1', face: '👦', n: 4,  c: 'var(--pink)' },
+  { name: 'คนที่ 2', face: '👧', n: 6,  c: 'var(--orange)' },
+  { name: 'คนที่ 3', face: '👦', n: 8,  c: 'var(--teal)' },
+  { name: 'คนที่ 4', face: '👧', n: 10, c: 'var(--purple)' },
+];
+const total = KIDS.reduce((s, k) => s + k.n, 0);
+const mean = total / KIDS.length;
+console.assert(total === 28 && mean === 7, 'snack data changed: check story text');
+
+const $ = id => document.getElementById(id);
+const bagHTML = (color, i) => `<span class="bag" style="--bc:${color};animation-delay:${i * 40}ms"></span>`;
+
+// bags[k] = list of bag colours kid k holds (colour = who brought it)
+function drawKids(bags) {
+  $('kids').innerHTML = KIDS.map((k, i) => `
+    <div class="kid" style="--c:${k.c}">
+      <div class="face">${k.face}</div><h3>${k.name}</h3>
+      <div class="count">${bags[i].length} ถุง</div>
+      <div class="bags">${bags[i].map(bagHTML).join('')}</div>
+    </div>`).join('');
+}
+
+function reset() {
+  drawKids(KIDS.map(k => Array(k.n).fill(k.c)));
+  $('pile').style.display = 'none';
+  $('math').style.display = 'none';
+  $('btnSum').disabled = false;
+  $('btnShare').disabled = true;
+}
+
+function sum() {
+  drawKids(KIDS.map(() => []));
+  const all = KIDS.flatMap(k => Array(k.n).fill(k.c));
+  $('pile').style.display = 'block';
+  $('pileCount').textContent = total;
+  $('pileBags').innerHTML = all.map(bagHTML).join('');
+  $('math').style.display = 'block';
+  $('math').innerHTML = `<div class="line">ผลรวม = ${KIDS.map(k => k.n).join(' + ')} = <b>${total}</b> ถุง</div>`;
+  $('btnSum').disabled = true;
+  $('btnShare').disabled = false;
+}
+
+function share() {
+  // each kid keeps own bags up to the mean; extras go to kids who are short
+  const keep = KIDS.map(k => Array(Math.min(k.n, mean)).fill(k.c));
+  const extra = KIDS.flatMap(k => Array(Math.max(k.n - mean, 0)).fill(k.c));
+  keep.forEach(b => { while (b.length < mean) b.push(extra.shift()); });
+  drawKids(keep);
+  $('pile').style.display = 'none';
+  $('math').innerHTML += `
+    <div class="line">แบ่งให้ ${KIDS.length} คนเท่าๆ กัน</div>
+    <div class="line">ค่าเฉลี่ย =
+      <span class="frac"><span>${KIDS.map(k => k.n).join(' + ')}</span><span>${KIDS.length}</span></span>
+      = <span class="frac"><span>${total}</span><span>${KIDS.length}</span></span>
+      = <span class="ans">${mean} ถุง</span></div>
+    <div class="line">ตอบ ได้ขนมเฉลี่ยคนละ <span class="ans">${mean} ถุง</span></div>
+    <div class="rule line">ค่าเฉลี่ยเลขคณิต =
+      <span class="frac"><span>ผลรวมของข้อมูลทั้งหมด</span><span>จำนวนข้อมูล</span></span></div>`;
+  $('btnShare').disabled = true;
+}
+
+$('btnSum').onclick = sum;
+$('btnShare').onclick = share;
+$('btnReset').onclick = reset;
+reset();
+</script>
+</body>
+</html>

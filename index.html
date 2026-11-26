@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ค่าเฉลี่ยเลขคณิต | คณิตศาสตร์ ม.2</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr minmax(320px, 620px);
+    gap: 32px;
+    align-items: center;
+    padding: 40px 5vw;
+    background: linear-gradient(90deg, rgba(255,248,236,0) 30%, rgba(255,248,236,.55) 60%), url(img/hero.jpg) center / cover no-repeat;
+  }
+  .title { align-self: end; padding-bottom: 6vh; }
+  .title .tag {
+    display: inline-block; background: var(--yellow); padding: .25em .9em;
+    font-family: 'Mitr'; letter-spacing: .15em; transform: rotate(-2deg); box-shadow: var(--shadow);
+  }
+  .title h1 {
+    margin: .3em 0 .2em; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.1;
+    background: #fff; display: inline-block; padding: .2em .5em; transform: rotate(1deg);
+    box-shadow: var(--shadow);
+  }
+  .title p { display: inline-block; background: var(--pink); color: #fff; padding: .3em .9em; font-size: 1.2rem; transform: rotate(-1deg); }
+
+  .cards { display: flex; flex-direction: column; gap: 18px; }
+  .card {
+    display: flex; align-items: center; gap: 18px; padding: 16px 22px;
+    text-decoration: none; color: var(--ink); background: #fff;
+    border-left: 12px solid var(--c);
+    transition: transform .15s;
+  }
+  .card:nth-child(odd) { transform: rotate(-.6deg); }
+  .card:nth-child(even) { transform: rotate(.6deg); }
+  a.card:hover { transform: rotate(0) scale(1.03); }
+  .badge {
+    flex: none; width: 58px; height: 58px; display: grid; place-items: center;
+    font-size: 1.8rem; color: #fff; background: var(--c);
+    border-radius: 50% 45% 52% 48%; box-shadow: 0 4px 0 rgba(0,0,0,.15);
+  }
+  .card h3 { margin: 0; font-size: 1.45rem; }
+  .card p { margin: .1em 0 0; opacity: .75; }
+  .card .ico { margin-left: auto; font-size: 2rem; }
+  .card.soon { opacity: .6; cursor: default; }
+
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; background-position: left top; }
+    .title { padding-bottom: 0; }
+  }
+</style>
+</head>
+<body>
+<main class="hero">
+  <div class="title">
+    <span class="tag">MATH ม.2</span><br>
+    <h1>ค่าเฉลี่ยเลขคณิต</h1><br>
+    <p>มาหาค่ากลางของข้อมูลกันเถอะ!</p>
+  </div>
+
+  <nav class="cards">
+    <a class="card paper" href="example1.html" style="--c: var(--pink)">
+      <span class="badge">1</span>
+      <div><h3>ตัวอย่าง</h3><p>ปาร์ตี้ปีใหม่ แบ่งขนมเท่าๆ กัน</p></div>
+      <span class="ico">🎉</span>
+    </a>
+    <div class="card paper soon" style="--c: var(--orange)">
+      <span class="badge">2</span>
+      <div><h3>กระดุม</h3><p>เร็วๆ นี้</p></div>
+      <span class="ico">🔘</span>
+    </div>
+    <div class="card paper soon" style="--c: var(--teal)">
+      <span class="badge">3</span>
+      <div><h3>เร็วๆ นี้</h3><p>กำลังเตรียมเนื้อหา</p></div>
+      <span class="ico">✂️</span>
+    </div>
+    <div class="card paper soon" style="--c: var(--purple)">
+      <span class="badge">4</span>
+      <div><h3>เร็วๆ นี้</h3><p>กำลังเตรียมเนื้อหา</p></div>
+      <span class="ico">✂️</span>
+    </div>
+    <div class="card paper soon" style="--c: var(--blue)">
+      <span class="badge">5</span>
+      <div><h3>เร็วๆ นี้</h3><p>กำลังเตรียมเนื้อหา</p></div>
+      <span class="ico">✂️</span>
+    </div>
+  </nav>
+</main>
+</body>
+</html>
