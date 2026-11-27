@@ -148,10 +148,11 @@ function layout(instant, delayOf = () => 0, dur = .8) {
 }
 
 function setAct(text, disabled) { $('act').textContent = text; $('act').disabled = disabled; $('exBtn').classList.toggle('show', text === 'เริ่มใหม่' && !disabled); }
-function setNums(show) {
+// value(t) = what card t shows; it flips to the new text half-way through
+function setNums(value) {
   $('stage').querySelectorAll('.num').forEach((n, t) => {
     n.classList.remove('flip'); void n.offsetWidth; n.classList.add('flip');
-    setTimeout(() => n.textContent = show ? SETS[cur][t] : '?', 250);
+    setTimeout(() => n.textContent = value(t), 250);
   });
 }
 const after = (ms, fn) => { busy = true; setTimeout(() => { busy = false; fn(); }, ms); };
@@ -161,16 +162,16 @@ $('act').onclick = () => {
   const n = buttons.length;
   if (state === 'separate') {            // รวม: everything flies to one mixed heap
     shuffle([...Array(n).keys()]).forEach((p, j) => { buttons[j].p = p; buttons[j].spin = (Math.random() < .5 ? -1 : 1) * (180 + Math.random() * 360); });
-    state = 'pile'; $('stage').classList.add('pile'); setNums(false); setAct('รวม', true);
+    state = 'pile'; $('stage').classList.add('pile'); setNums(() => '?'); setAct('รวม', true);
     layout(false, b => b.p * .035, .9);
     after(n * 35 + 950, () => { $('layer').classList.remove('bump'); void $('layer').offsetWidth; $('layer').classList.add('bump'); setAct('แบ่งให้เท่ากัน', false); });
   } else if (state === 'pile') {         // แบ่งให้เท่ากัน: deal from the heap one by one, round-robin
     state = 'divided'; $('stage').classList.remove('pile'); setAct('แบ่งให้เท่ากัน', true);
     buttons.forEach(b => b.spin = (b.spin || 0) + (Math.random() < .5 ? -360 : 360));
     layout(false, b => b.p * .09, .75);
-    after(n * 90 + 800, () => setAct('เริ่มใหม่', false));
+    after(n * 90 + 800, () => { setNums(() => n / 4); setAct('เริ่มใหม่', false); });
   } else {                               // เริ่มใหม่: back to each colour's own column
-    state = 'separate'; setNums(true); setAct('เริ่มใหม่', true);
+    state = 'separate'; setNums(t => SETS[cur][t]); setAct('เริ่มใหม่', true);
     buttons.forEach(b => b.spin = 0);
     layout(false, (b, j) => j * .025, .8);
     after(n * 25 + 850, () => setAct('รวม', false));
