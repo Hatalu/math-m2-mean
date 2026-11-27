@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>แบ่งให้เท่ากัน | ค่าเฉลี่ย ม.2</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  /* ---------- overview: 4 data sets ---------- */
+  .sets { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 2.5vh 2.5vw; }
+  .set { position: relative; display: flex; flex-direction: column; align-items: center; padding: 1.4vh 1.5vw 1.6vh; cursor: pointer;
+    background: #fff; border-top: 8px solid var(--c); transition: transform .2s; animation: rise .6s cubic-bezier(.3, 1.4, .5, 1) both var(--d); }
+  .set:hover { transform: scale(1.03) rotate(var(--gr)); }
+  .set h2 { margin: 0 0 1vh; font-size: 3.4vh; padding: 0 .7em; color: #fff; background: var(--c); transform: rotate(-2deg); }
+  .mini { flex: 1; width: 100%; display: grid; grid-template-columns: repeat(4, 1fr); gap: 1vw; }
+  .mcol { display: flex; flex-direction: column; align-items: center; gap: .8vh; }
+  .mnum { font-family: 'Mitr'; font-weight: 600; font-size: 3.6vh; line-height: 1; color: #fff; background: var(--c);
+    width: 5.6vh; height: 5.6vh; display: grid; place-items: center; border-radius: 8px; box-shadow: 0 3px 0 rgba(0,0,0,.15); }
+  .mpile { display: grid; grid-template-columns: repeat(3, 4vh); gap: .4vh; }
+  .mpile img { width: 4vh; height: 4vh; transform: rotate(var(--r)); filter: var(--f) drop-shadow(0 2px 1px rgba(0,0,0,.2)); }
+  .tap-hint { position: absolute; right: 1vw; bottom: .8vh; font-size: 1.8vh; color: #9a93a8; font-family: 'Mitr'; }
+
+  /* ---------- detail: one set zoomed to full screen ---------- */
+  .detail { position: fixed; inset: 0; z-index: 20; display: flex; flex-direction: column;
+    background: radial-gradient(circle at 20% 10%, rgba(255, 210, 63, .35), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(255, 111, 165, .3), transparent 45%), var(--paper);
+    transform-origin: 0 0; will-change: transform; }
+  .detail[hidden] { display: none; }
+  .stage { position: relative; flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: clamp(12px, 2.5vw, 36px); }
+  .group { display: flex; flex-direction: column; align-items: center; padding: 2.5vh 10px; background: #fff;
+    border-top: 10px solid var(--c); transform: rotate(var(--gr)); transition: opacity .5s; }
+  .stage.pile .group { opacity: .55; }
+  .num { perspective: 400px; }
+  .num.flip { animation: flip .5s ease-in-out; }
+  .layer { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+  .bt { position: absolute; left: 0; top: 0; width: var(--s); height: var(--s);
+    transition-property: transform; transition-timing-function: cubic-bezier(.45, 1.35, .5, 1); }
+  .bt img { width: 100%; height: 100%; transform: rotate(var(--r)); filter: var(--f) drop-shadow(0 3px 2px rgba(0,0,0,.25));
+    animation: pop .45s cubic-bezier(.3, 1.8, .5, 1) both var(--d), wobble 2.4s ease-in-out infinite alternate calc(var(--d) + .45s); }
+  .layer.bump { animation: bump .45s ease-out; }
+  .controls { flex: none; display: flex; justify-content: center; padding-top: 2.2vh; }
+  .act { font-size: clamp(1.2rem, 4vh, 2.2rem); padding: .45em 1.6em; animation: breathe 1.6s ease-in-out infinite alternate; }
+  .act:disabled { animation: none; }
+
+  @keyframes rise { from { transform: translateY(40vh) rotate(calc(var(--gr) * 8)); opacity: 0; } to { transform: rotate(var(--gr)); opacity: 1; } }
+  @keyframes pop { from { transform: scale(0) rotate(calc(var(--r) - 120deg)); } to { transform: scale(1) rotate(var(--r)); } }
+  @keyframes wobble { from { transform: rotate(calc(var(--r) - 6deg)); } to { transform: rotate(calc(var(--r) + 6deg)); } }
+  @keyframes flip { 50% { transform: rotateY(90deg) rotate(-3deg); } }
+  @keyframes bump { 40% { transform: scale(1.05); } }
+  @keyframes breathe { from { transform: rotate(-1deg) scale(1); } to { transform: rotate(1deg) scale(1.05); } }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } .bt, .detail { transition: none !important; } }
+</style>
+</head>
+<body class="screen">
+<a class="btn back" href="index.html">← หน้าหลัก</a>
+<div class="bunting"></div>
+<div class="wrap">
+  <h1><span>แบ่งให้เท่ากัน</span></h1>
+  <section class="sets" id="sets"></section>
+</div>
+
+<div class="detail" id="detail" hidden>
+  <button class="btn back" id="close">← ทุกชุด</button>
+  <div class="bunting"></div>
+  <div class="wrap">
+    <h1><span id="dTitle"></span></h1>
+    <section class="stage" id="stage"><div class="layer" id="layer"></div></section>
+    <div class="controls"><button class="btn teal act" id="act">รวม</button></div>
+  </div>
+</div>
+
+<script>
+// colour order matches the worksheet table: ฟ้า ขาว ส้ม ชมพู
+const TYPES = [
+  { img: 'btn-blue', c: 'var(--blue)', label: 'สีฟ้า', shades: ['hue-rotate(-14deg) saturate(1.3)', 'brightness(1)', 'saturate(1.6) brightness(.9)', 'hue-rotate(10deg) brightness(1.05)'] },
+  { img: 'btn-white', c: '#b9b2c4', label: 'สีขาว', shades: ['brightness(1)', 'sepia(.3) brightness(1.03)', 'sepia(.2) hue-rotate(170deg) saturate(1.6)', 'brightness(.9)', 'sepia(.4) saturate(1.2) brightness(1.02)'] },
+  { img: 'btn-orange', c: 'var(--orange)', label: 'สีส้ม', shades: ['brightness(1)', 'hue-rotate(-10deg) saturate(1.25)', 'hue-rotate(12deg) brightness(1.05)', 'saturate(.75) brightness(1.12)', 'brightness(.86)', 'hue-rotate(-5deg) saturate(1.4)'] },
+  { img: 'btn-pink', c: 'var(--pink)', label: 'สีชมพู', shades: ['brightness(1)', 'hue-rotate(-14deg) saturate(1.25)', 'hue-rotate(10deg) brightness(1.08)', 'saturate(.7) brightness(1.15)', 'hue-rotate(-6deg) brightness(.88)', 'saturate(1.4) brightness(.95)'] },
+];
+const SETS = [[3, 5, 7, 9], [2, 4, 6, 8], [2, 3, 7, 8], [1, 2, 8, 9]];
+const SET_COLORS = ['var(--pink)', 'var(--orange)', 'var(--teal)', 'var(--purple)'];
+const $ = id => document.getElementById(id);
+const tilt = (i, k) => ((i + k * 5) * 53) % 40 - 20;
+const shade = (t, i) => TYPES[t].shades[(i * 3 + t) % TYPES[t].shades.length];
+const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+// ---------- overview ----------
+$('sets').innerHTML = SETS.map((set, k) => `
+  <div class="set paper" role="button" tabindex="0" data-k="${k}" style="--c:${SET_COLORS[k]};--gr:${k % 2 ? .7 : -.7}deg;--d:${.2 + k * .15}s"
+       aria-label="ชุดที่ ${k + 1}: ${set.map((n, t) => TYPES[t].label + ' ' + n).join(', ')}">
+    <h2>ชุดที่ ${k + 1}</h2>
+    <div class="mini">${set.map((n, t) => `
+      <div class="mcol"><div class="mnum" style="--c:${TYPES[t].c}">${n}</div>
+        <div class="mpile">${Array.from({ length: n }, (_, i) => `<img src="img/icons/${TYPES[t].img}.png" alt="" style="--r:${tilt(i, t)}deg;--f:${shade(t, i)}">`).join('')}</div>
+      </div>`).join('')}</div>
+    <span class="tap-hint">แตะเพื่อเปิด</span>
+  </div>`).join('');
+
+// ---------- detail ----------
+let cur = -1, state = 'separate', buttons = [], busy = false, tile = null;
+
+function build(k) {
+  const set = SETS[k];
+  $('dTitle').textContent = `ชุดที่ ${k + 1}`;
+  $('stage').querySelectorAll('.group').forEach(g => g.remove());
+  $('stage').insertAdjacentHTML('afterbegin', set.map((n, t) => `
+    <div class="group paper" style="--c:${TYPES[t].c};--gr:${t % 2 ? .8 : -.8}deg">
+      <div class="num" style="--c:${TYPES[t].c}">${n}</div></div>`).join(''));
+  buttons = [];
+  set.forEach((n, t) => { for (let i = 0; i < n; i++) buttons.push({ t, i, r: tilt(i, t) }); });
+  $('layer').innerHTML = buttons.map((b, j) =>
+    `<div class="bt"><img src="img/icons/${TYPES[b.t].img}.png" alt="" style="--r:${b.r}deg;--f:${shade(b.t, b.i)};--d:${(.05 + j * .04).toFixed(2)}s"></div>`).join('');
+  buttons.forEach((b, j) => b.el = $('layer').children[j]);
+  state = 'separate';
+  setAct('รวม', false);
+}
+
+// where every button sits for the current state (pixels inside the stage)
+function layout(instant, delayOf = () => 0, dur = .8) {
+  const stage = $('stage'), sr = stage.getBoundingClientRect();
+  const cols = [...stage.querySelectorAll('.group')].map(g => {
+    const r = g.getBoundingClientRect(), nr = g.querySelector('.num').getBoundingClientRect();
+    return { cx: r.left - sr.left + r.width / 2, top: nr.bottom - sr.top, w: r.width, h: r.bottom - nr.bottom };
+  });
+  const gap = Math.max(4, innerHeight * .008);
+  const s = Math.min(innerHeight * .105, (cols[0].w - 24 - 2 * gap) / 3, (cols[0].h - 3 * gap - 20) / 3);
+  $('layer').style.setProperty('--s', s + 'px');
+  const slot = (c, k) => [cols[c].cx + ((k % 3) - 1) * (s + gap) - s / 2, cols[c].top + 2 * gap + Math.floor(k / 3) * (s + gap)];
+  buttons.forEach((b, j) => {
+    let x, y;
+    if (state === 'separate') [x, y] = slot(b.t, b.i);
+    else if (state === 'pile') {
+      // golden-angle spiral: a round heap in the middle of the stage
+      const a = b.p * 2.39996, rad = s * .52 * Math.sqrt(b.p + .3);
+      x = sr.width / 2 + Math.cos(a) * rad - s / 2; y = sr.height / 2 + Math.sin(a) * rad * .85 - s / 2;
+    } else [x, y] = slot(b.p % 4, Math.floor(b.p / 4));   // dealt round-robin: equal share per column
+    b.el.style.transitionDuration = instant ? '0s' : dur + 's';
+    b.el.style.transitionDelay = instant ? '0s' : delayOf(b, j) + 's';
+    b.el.style.zIndex = state === 'pile' ? 100 - b.p : 1;
+    b.el.style.transform = `translate(${x}px, ${y}px) rotate(${b.spin || 0}deg)`;
+  });
+}
+
+function setAct(text, disabled) { $('act').textContent = text; $('act').disabled = disabled; }
+function setNums(show) {
+  $('stage').querySelectorAll('.num').forEach((n, t) => {
+    n.classList.remove('flip'); void n.offsetWidth; n.classList.add('flip');
+    setTimeout(() => n.textContent = show ? SETS[cur][t] : '?', 250);
+  });
+}
+const after = (ms, fn) => { busy = true; setTimeout(() => { busy = false; fn(); }, ms); };
+
+$('act').onclick = () => {
+  if (busy) return;
+  const n = buttons.length;
+  if (state === 'separate') {            // รวม: everything flies to one mixed heap
+    shuffle([...Array(n).keys()]).forEach((p, j) => { buttons[j].p = p; buttons[j].spin = (Math.random() < .5 ? -1 : 1) * (180 + Math.random() * 360); });
+    state = 'pile'; $('stage').classList.add('pile'); setNums(false); setAct('รวม', true);
+    layout(false, b => b.p * .035, .9);
+    after(n * 35 + 950, () => { $('layer').classList.remove('bump'); void $('layer').offsetWidth; $('layer').classList.add('bump'); setAct('แบ่งให้เท่ากัน', false); });
+  } else if (state === 'pile') {         // แบ่งให้เท่ากัน: deal from the heap one by one, round-robin
+    state = 'divided'; $('stage').classList.remove('pile'); setAct('แบ่งให้เท่ากัน', true);
+    buttons.forEach(b => b.spin = (b.spin || 0) + (Math.random() < .5 ? -360 : 360));
+    layout(false, b => b.p * .09, .75);
+    after(n * 90 + 800, () => setAct('เริ่มใหม่', false));
+  } else {                               // เริ่มใหม่: back to each colour's own column
+    state = 'separate'; setNums(true); setAct('เริ่มใหม่', true);
+    buttons.forEach(b => b.spin = 0);
+    layout(false, (b, j) => j * .025, .8);
+    after(n * 25 + 850, () => setAct('รวม', false));
+  }
+};
+
+function open(k) {
+  tile = $('sets').children[k]; cur = k;
+  build(k);
+  const r = tile.getBoundingClientRect(), d = $('detail');
+  d.hidden = false;
+  d.style.transition = 'none';
+  d.style.transform = `translate(${r.left}px, ${r.top}px) scale(${r.width / innerWidth}, ${r.height / innerHeight})`;
+  d.style.opacity = .3;
+  $('layer').style.visibility = 'hidden';
+  void d.offsetWidth;
+  d.style.transition = 'transform .6s cubic-bezier(.3, 1.1, .4, 1), opacity .35s';
+  d.style.transform = 'none'; d.style.opacity = 1;
+  after(620, () => {
+    layout(true);
+    // replay the pop-in now that the zoom has finished (it ran unseen while hidden)
+    $('layer').querySelectorAll('img').forEach(i => { i.style.animation = 'none'; void i.offsetWidth; i.style.animation = ''; });
+    $('layer').style.visibility = 'visible';
+  });
+}
+function close() {
+  if (busy || !tile) return;
+  const r = tile.getBoundingClientRect(), d = $('detail');
+  $('layer').style.visibility = 'hidden';
+  d.style.transform = `translate(${r.left}px, ${r.top}px) scale(${r.width / innerWidth}, ${r.height / innerHeight})`;
+  d.style.opacity = 0;
+  after(600, () => { d.hidden = true; cur = -1; });
+}
+$('sets').addEventListener('click', e => { const t = e.target.closest('.set'); if (t && !busy) open(+t.dataset.k); });
+$('sets').addEventListener('keydown', e => { const t = e.target.closest('.set'); if (t && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); open(+t.dataset.k); } });
+$('close').onclick = close;
+addEventListener('keydown', e => { if (e.key === 'Escape' && cur >= 0) close(); });
+addEventListener('resize', () => { if (cur >= 0 && !busy) layout(true); });
+
+// self-check: every set shares out evenly between 4 people
+console.assert(SETS.every(s => s.reduce((a, b) => a + b) % 4 === 0), 'a data set does not divide evenly by 4');
+</script>
+</body>
+</html>
