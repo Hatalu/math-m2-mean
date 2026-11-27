@@ -6,7 +6,7 @@
 <title>ตัวอย่าง: แบ่งกระดุม | ค่าเฉลี่ย ม.2</title>
 <link rel="stylesheet" href="style.css">
 <style>
-  .scene-wrap { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; }
+  .scene-wrap { position: relative; flex: 1; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr); justify-items: center; align-items: center; }
   .scene { max-width: 100%; max-height: 100%; display: block; border: 12px solid #fff; box-shadow: var(--shadow); transform: rotate(-1deg);
     animation: in .8s cubic-bezier(.3, 1.4, .5, 1) both .5s; }
   .num { animation: pop .6s cubic-bezier(.3, 1.8, .5, 1) both var(--d), bob 2.6s ease-in-out infinite alternate calc(var(--d) + .6s); }
