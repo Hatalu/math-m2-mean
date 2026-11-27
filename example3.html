@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ตัวอย่าง: แบ่งกระดุม | ค่าเฉลี่ย ม.2</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .scene-wrap { position: relative; flex: 1; min-height: 0; display: flex; justify-content: center; align-items: center; }
+  .scene { max-width: 100%; max-height: 100%; display: block; border: 12px solid #fff; box-shadow: var(--shadow); transform: rotate(-1deg);
+    animation: in .8s cubic-bezier(.3, 1.4, .5, 1) both .5s; }
+  .num { animation: pop .6s cubic-bezier(.3, 1.8, .5, 1) both var(--d), bob 2.6s ease-in-out infinite alternate calc(var(--d) + .6s); }
+  .deco { animation: float 3s ease-in-out infinite alternate; }
+  .deco:nth-of-type(even) { animation-delay: -1.5s; }
+  @keyframes pop { from { transform: scale(0) rotate(-40deg); } to { transform: scale(1) rotate(var(--rot)); } }
+  @keyframes bob { from { transform: rotate(var(--rot)) translateY(0); } to { transform: rotate(var(--rot)) translateY(-6px); } }
+  @keyframes in { from { transform: translateY(30vh) rotate(-6deg); opacity: 0; } to { transform: rotate(-1deg); opacity: 1; } }
+  @keyframes float { from { translate: 0 0; } to { translate: 0 -10px; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body class="screen">
+<a class="btn back" href="share3.html">← แบ่งให้เท่ากัน</a>
+<div class="bunting"></div>
+
+<div class="wrap">
+  <img class="deco hide-sm" src="img/icons/buttons-pile.png" alt="" style="width:120px; left:0; top:20px; transform:rotate(-8deg)">
+  <img class="deco hide-sm" src="img/icons/scissors.png" alt="" style="width:90px; right:20px; top:20px; transform:rotate(12deg)">
+
+  <h1><span>ตัวอย่าง</span></h1>
+
+  <div class="nums">
+    <div class="num" style="--c: var(--pink); --rot:-3deg; --d:.1s">5</div>
+    <div class="num" style="--c: var(--orange); --rot:3deg; --d:.25s">10</div>
+    <div class="num" style="--c: var(--teal); --rot:-3deg; --d:.4s">15</div>
+    <div class="num" style="--c: var(--purple); --rot:3deg; --d:.55s">20</div>
+  </div>
+
+  <div class="scene-wrap">
+    <img class="scene" src="img/buttons-scene.jpg" alt="ภาพกระดาษตัดสีสดใส นักเรียนสี่คนนั่งรอบโต๊ะ แบ่งกระดุมหลากสีเป็นกองเท่าๆ กัน">
+    <img class="deco hide-sm" src="img/icons/star.png" alt="" style="width:80px; left:4%; bottom:4%; transform:rotate(-14deg)">
+    <img class="deco hide-sm" src="img/icons/pencil.png" alt="" style="width:90px; right:4%; bottom:4%; transform:rotate(10deg)">
+  </div>
+</div>
+</body>
+</html>

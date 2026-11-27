@@ -41,6 +41,10 @@
   .controls { flex: none; display: flex; justify-content: center; padding-top: 2.2vh; }
   .act { font-size: clamp(1.2rem, 4vh, 2.2rem); padding: .45em 1.6em; animation: breathe 1.6s ease-in-out infinite alternate; }
   .act:disabled { animation: none; }
+  /* shown only after sharing: jump to the 5 10 15 20 example */
+  .ex-btn { position: absolute; right: 2.5vw; bottom: 2.2vh; z-index: 5; font-size: clamp(1.1rem, 3.4vh, 1.9rem); padding: .45em 1.3em;
+    visibility: hidden; transform: scale(0); transition: transform .45s cubic-bezier(.3, 1.8, .5, 1), visibility 0s .45s; }
+  .ex-btn.show { visibility: visible; transform: rotate(-3deg) scale(1); transition: transform .45s cubic-bezier(.3, 1.8, .5, 1); }
 
   @keyframes rise { from { transform: translateY(40vh) rotate(calc(var(--gr) * 8)); opacity: 0; } to { transform: rotate(var(--gr)); opacity: 1; } }
   @keyframes pop { from { transform: scale(0) rotate(calc(var(--r) - 120deg)); } to { transform: scale(1) rotate(var(--r)); } }
@@ -67,6 +71,7 @@
     <h1><span id="dTitle"></span></h1>
     <section class="stage" id="stage"><div class="layer" id="layer"></div></section>
     <div class="controls"><button class="btn teal act" id="act">รวม</button></div>
+    <a class="btn orange ex-btn" id="exBtn" href="example3.html">ตัวอย่าง</a>
   </div>
 </div>
 
@@ -142,7 +147,7 @@ function layout(instant, delayOf = () => 0, dur = .8) {
   });
 }
 
-function setAct(text, disabled) { $('act').textContent = text; $('act').disabled = disabled; }
+function setAct(text, disabled) { $('act').textContent = text; $('act').disabled = disabled; $('exBtn').classList.toggle('show', text === 'เริ่มใหม่' && !disabled); }
 function setNums(show) {
   $('stage').querySelectorAll('.num').forEach((n, t) => {
     n.classList.remove('flip'); void n.offsetWidth; n.classList.add('flip');
